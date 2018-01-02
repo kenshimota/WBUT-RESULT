@@ -1,455 +1,201 @@
-#include<stdio.h>
-#include<string.h>
-int main()
-{
-	int a,p=4,g,k,n,w,c,m=3,o,h=1,z,y,i,e=4,sum=0,sum1=0,q=3,f=2,t,d,r=2,sum2=0,l,b,u,v=1,x,sum3=0,sum4=0,sum5=0,sum6=0,sum7=0,total,total_even,e1,t3;
-	float sgpa,sgpa1,ygpa;
-	char s[5];
-	char arr[10];
-		printf("WELCOME TO MAKAUT FOR RESULT:\n");
-		while(1)
+/*
+	Author: Erik Mota(TheMot)...
+	Date: 01-01-2017 5:32 p.m (UTC - 4:30) Caracas
+	Email: Kenshimota@gmail.com
+	Github: https://github.com/kenshimota
+
+	TheMot: Estas son mis orientaciones a tu codigo porque veo que tienes mcuhas fallas en cuanto 
+al estilo, maneo de variables, te recomiento que use mas funciones y no combiertas tu codigo en 
+un espaguetti me costo un poco poder entenderlo de hecho no entendi mucho tu idea, recuerda 
+que es usuario no sabe lo que haces y como esta hecho el programa si el programa falla los usuarios
+lo dejaran de usar y una de la cosas mas importantes valida tus datos en el input porque sino vas
+a volver corrupta tu base de datos y el programa no serviria de nada....
+
+	Recuerda siempre documentar tu codigo porque si llegas a quedar en una empresa como programador
+vas a trabajar con muchas personas y ellos necesitaran saber para que funciona cada cosa y que significa :P
+Te deseo suerte como programador...
+	
+	Postdata-> Sigueme en mi cuenta de Github... :) :D*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h> /*use esta libraria porque me permitira hacer la salida del programa
+y tambien te puede ayudar mucho con el manejo de memoria */
+
+/* funcion que se encarga de imprimir los resultados obtenidos */
+void printResult(int point, float spga, char select[]){
+	printf("Total Credit Point=%d \n",point);
+	printf("SGPA Of %s Semestar=%.2f \n",select,spga);
+}
+
+/* Funcion que se encargara de obtener los resultados directamente de la suma
+de los valores obtenidos dividos en la fraciones obtenidas */
+float getResult(int *values, int *fraction , char select[]){
+	float spga;
+	int total;
+	float tmp_fraction;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		total += values[i];
+		tmp_fraction = ((i+1) * fraction[i]); 
+	}
+
+	spga =  float(total / tmp_fraction);
+	printResult(total, spga, select);
+
+	return spga;
+}
+
+/**
+ * Lee un entero de la entrada estandar.
+ *
+ * La funcion continuara pidiendo un numero al usuario mientras el "input" sea
+ * invalido.
+ */
+int read_int(){
+    while(1){
+        int num = 0;
+        // scanf regersa el numero de caracteres leidos
+        int read_count = scanf("%d", &num);
+        getchar();
+        if(read_count == 1){
+            // si el numero de caracteres leidos es 1, quiere decir que hemos
+            // obtenido un valor que corresponde con el formato %d, o sea, un
+            // entero.
+            // Regresamos ese numero.
+            return num;
+        } else {
+            // si read_count es diferente de 1, quiere decir que scanf no pudo leer
+            // un valor que corresponda con el formato %d. En ese caso,
+            // volveremos a pedir al usuario que ingrese un valor valido.
+            printf("\nThe value entered is not valid.\n");
+            printf("\nPlease enter a number: ");
+        }
+    }
+}
+
+
+/* Funcion que obtendra un valor valido para lo ingresado por el usuario una calificacion
+(A - F) e O  y obtorgara el valor a la suma */
+void get_char(int *sum, int q){
+	
+	char c;
+
+	while(1){
+
+		scanf("%s",&c);
+		getchar();
+
+		if(c >= 'A' && c <= 'Z')
+			c  =  c+('a'-'A');
+		//esta forma permite que si La letra es mayuscala la convertira en minuscula
+
+		if( ( c >= 'a' && c <= 'f' ) || c == 'o' ){
+			switch(c){
+				case 'a': *sum += 8*q; break;
+				case 'b': *sum += 7*q; break;
+				case 'c': *sum += 6*q; break;
+				case 'd': *sum += 5*q; break;
+				case 'f': *sum += 2*q; break;
+				case 'e': *sum += 9*q; break;
+				case 'o': *sum += 10*q; break;
+			}
+
+			break;
+		}
+		else
+			printf("\nThe value entered is not valid.\n");
+	}
+}
+
+float oddSemResult(char select[]){
+
+	/* Reemplaze n con number porque pense que como era numerica usaste una abreviatura
+	pero no estoy claro del todo */
+	int number;
+	int sum[4], notes[4];
+
+	/* En vez de usar 4 veces el mismo codigo usas ciclos que hacen mas corto el codigo
+	siempre tiene que recordar el consejo: Not-repeat YourSelf... */
+	for (int i = 3; i >= 0; --i)
+	{
+		printf("Enter number of subject %d credit point:",i);
+		number = read_int();
+		notes[i] = number;
+
+		for (int index = 0; index < number ; ++i)
 		{
-		printf("Press 1.For ODD SEM RESULT SGPA:\n");
-		printf("Press 2.For EVEN SEM RESULT SGPA:\n");
-		printf("Press 3.For YGPA:\n");			
+			printf("Enter subject %d grade:",index+1);
+			get_char(&sum[i] , i);
+		}
+	}
+
+	return getResult(sum, notes, select);
+}
+
+
+/* Funcion imprimir en pantalla las opciones que puede selecionas el usuario */
+void print_options(){
+	printf("Press 1.For ODD SEM RESULT SGPA\n");
+	printf("Press 2.For EVEN SEM RESULT SGPA\n");
+	printf("Press 3.For YGPA\n");
+	printf("Press 4.Exit\n");
+}
+
+/* Funcion que leera las opciones que traten usar los usuarios de los usuarios */
+int select_options(){
+
+	int option;
+	float spga[2];
+
+	while(1){
+
+		print_options();
+
 		printf("Enter ur choice:");
-		scanf("%d",&e1);
-		switch(e1)
-		{
-		case 1:
-		printf("Enter number of subject 4 credit point:");
-		scanf("%d",&n);
-		for(i=0;i<n; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<n;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			g=10*p;
-			sum=sum+g;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-			g=9*p;
-			sum=sum+g;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-			g=8*p;
-			sum=sum+g;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-			g=7*p;
-			sum=sum+g;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-       	        {
-        		g=6*p;
-			sum=sum+g;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-			g=5*p;
-			sum=sum+g;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-			
-			g=2*p;
-			sum=sum+g;
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
+		scanf("%d",&option);
+		getchar();
+
+		switch(option){
+			case 1:
+				spga[0] = oddSemResult("Sem");
+			break;
+			case 2:
+				spga[1] = oddSemResult("Even");
+			break;
+			case 3:
+				printf("YGPA OF SEMESTAR=%.2f \n",(spga[0] / spga[1]));
+				getchar();
+			break;
+			case 4:
+				printf("Press a key to exit...\n");
+				getchar(); 
+				exit(1);
+			break;
+			default:
+				printf("Please enter a valid option...\n");
+			break;
 		}
 	}
-		printf("Enter number of subject 3 credit point:");
-		scanf("%d",&d);
-		
-		for(i=0;i<d; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<d;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			t=10*q;
-			sum1=sum1+t;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-			t=9*q;
-			sum1=sum1+t;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-			t=8*q;
-			sum1=sum1+t;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-			t=7*q;
-			sum1=sum1+t;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-       	        {
-        		t=6*q;
-			sum1=sum1+t;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-			t=5*q;
-			sum1=sum1+t;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-			t=2*q;
-			sum1=sum1+t;
-			
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}
-	}
-	   printf("Enter number of subject 2 credit point:");
-		scanf("%d",&b);
-		for(i=0;i<b; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<b;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			l=10*r;
-			sum2=sum2+l;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-			l=9*r;
-			sum2=sum2+l;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-		l=8*r;
-			sum2=sum2+l;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-			l=7*r;
-			sum2=sum2+l;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-       	        {
-        		l=6*r;
-			sum2=sum2+l;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-			l=5*r;
-			sum2=sum2+l;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-			
-			l=2*r;
-			sum2=sum2+l;
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}
-	}       
-printf("Enter number of subject 1 credit point:");
-		scanf("%d",&x);
-		for(i=0;i<x; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<x;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			u=10*v;
-			sum3=sum3+u;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-				u=9*v;
-			sum3=sum3+u;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-				u=8*v;
-			sum3=sum3+u;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-				u=7*v;
-			sum3=sum3+u;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-       	        {
-        			u=6*v;
-			sum3=sum3+u;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-				u=5*v;
-			sum3=sum3+u;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-			
-				u=2*v;
-			sum3=sum3+u;
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}
-	}
-total=(sum+sum1+sum2+sum3);
-sgpa=float(total)/float(4*n+3*d+2*b+1*x);
-printf("Total Credit Point=%d \n",total);
-printf("SGPA Of Odd Semestar=%.2f \n",sgpa);
-break;
-case 2:printf("Enter number of subject 4 credit point:",p);
-		scanf("%d",&a);
-		
-		for(i=0;i<a; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<a;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			w=10*e;
-			sum4=sum4+w;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-				w=9*e;
-			sum4=sum4+w;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-				w=8*e;
-			sum4=sum4+w;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-				w=7*e;
-			sum4=sum4+w;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-       	        {
-        			w=6*e;
-			sum4=sum4+w;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-				w=5*e;
-			sum4=sum4+w;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-				w=2*e;
-			sum4=sum4+w;
-			
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}
-	}
-	printf("Enter number of subject 3 credit point:");
-		scanf("%d",&c);
-		
-		for(i=0;i<c; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<c;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			o=10*m;
-			sum5=sum5+o;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-				o=9*m;
-			sum5=sum5+o;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-				o=8*m;
-			sum5=sum5+o;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-				o=7*m;
-			sum5=sum5+o;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-        {
-        	o=6*m;
-			sum5=sum5+o;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-				o=5*m;
-			sum5=sum5+o;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-				o=2*m;
-			sum5=sum5+o;
-			
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}
-	}
-	printf("Enter number of subject 2 credit point:");
-		scanf("%d",&t3);
-		for(i=0;i<t3; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       	}
-	for(i=0;i<t3;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			k=10*f;
-			sum6=sum6+k;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-				k=9*f;
-			sum6=sum6+k;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-		    k=8*f;
-			sum6=sum6+k;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-			 k=7*f;
-			sum6=sum6+k;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-        {
-        		 k=6*f;
-			sum6=sum6+k;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-				 k=5*f;
-			sum6=sum6+k;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-		    k=2*f;
-			sum6=sum6+k;
-			
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}		
-	   	 }
-printf("Enter number of subject 1 credit point:");
-		scanf("%d",&y);
-		for(i=0;i<y; i++)
- 		{
-			printf("Enter subject %d grade:",i+1);      		 	
-			scanf("%s",&s[i]);
-       				
-	   	 }
-		
-	for(i=0;i<y;i++)
-	{	
-		if(s[i]=='o' || s[i]=='O')
-		{
-			z=10*h;
-			sum7=sum7+z;
-		}
-		else if (s[i]=='e' || s[i]=='E')
-		{
-				z=9*h;
-			sum7=sum7+z;
-		}
-		else if (s[i]=='a' || s[i]=='A')
-		{
-				z=8*h;
-			sum7=sum7+z;
-		}
-		else if (s[i]=='b' || s[i]=='B')
-		{
-				z=7*h;
-			sum7=sum7+z;
-		}
-		else if (s[i]=='c' || s[i]=='C')
-       	        {
-        			z=6*h;
-			sum7=sum7+z;
-		}
-		else if (s[i]=='d' || s[i]=='D')
-		{
-				z=5*h;
-			sum7=sum7+z;
-		}
-		else if (s[i]='f' || s[i]=='F')
-		{
-			
-				z=2*h;
-			sum7=sum7+z;
-		}
-		else
-		{
-			printf("WRONG INPUT TRY AGAIN:\n");
-		}
-	}	
-total_even=(sum4+sum5+sum6+sum7);
-sgpa1=float(total_even)/float(4*a+3*c+2*t3+1*y);
-printf("Total Credit Point=%d \n",total_even);
-printf("SGPA Of Even semestar=%.2f \n ",sgpa1);
-break;
-case 3:ygpa=(sgpa+sgpa1)/2;
-       printf("YGPA OF SEMESTAR=%.2f \n",ygpa);
-       break;
-       default:printf("Wrong Choice:\n");
-       break;
+
+	return 0;
 }
+
+/* Funcion encargada de imprimir la bienvenedia */
+void print_welcome(){
+	printf("WELCOME TO MAKAUT FOR RESULT:\n");
 }
- return 0;
-	  }   
+
+
+/* -- Main -- */
+int main(){
+
+	while(1){
+
+		print_welcome();
+
+		select_options();
+
+	}
+}
